@@ -1,13 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cards;
 
 /**
  *
- * @author Dasty
+ * @author Garrison Price
  */
 public class Card {
-    
+    private String name;
+    private String description;
+    private int APCost;
+    private int type;
 }
