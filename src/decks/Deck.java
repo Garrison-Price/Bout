@@ -1,6 +1,7 @@
 package decks;
 
 import cards.Card;
+import java.util.Random;
 import mainPack.Constants;
 
 /**
@@ -34,7 +35,7 @@ public class Deck {
     public Card nextCard() {
         if(isEmpty())
             return null;
-        correctTopCardIndex();
+        topCardIndex = correctIndex(topCardIndex);
         currentSize--;
         return cards[topCardIndex++];
     }
@@ -56,7 +57,7 @@ public class Deck {
             return false;
         currentSize++;
         topCardIndex--;
-        correctTopCardIndex();
+        topCardIndex = correctIndex(topCardIndex);
         cards[topCardIndex] = newCard;
         return true;
     }
@@ -66,20 +67,49 @@ public class Deck {
     public boolean addCardRandom(Card newCard) {
         if(isFull()) 
             return false;
-        //Not Implemented Yet
+        int insertionPoint = (int)(Math.random()*cards.length) + topCardIndex;
+        for(int currentCardIndex = (topCardIndex + currentSize + 1); currentCardIndex > insertionPoint; currentCardIndex--) {
+            int correctedCurrentCardIndex = correctIndex(currentCardIndex);
+            int correctedPreviousCardIndex = correctIndex(currentCardIndex - 1);
+            cards[correctedCurrentCardIndex] = cards[correctedPreviousCardIndex];
+        }
+        cards[correctIndex(insertionPoint)] = newCard;
         return true;
     }
     
     //Randomly shuffles the deck and moves the top car index back to zero.
     public void randomizeDeck() {
-        //Not Implemented Yet
+        Card[] cardHolder = new Card[currentSize];
+        int cardIndex = 0;
+        while(!isEmpty())
+            cardHolder[cardIndex++] = nextCard();
+        shuffleArray(cardHolder);
+        for(cardIndex = 0; cardIndex < currentSize; cardIndex++)
+            addCardBottom(cardHolder[cardIndex]);
     }
     
-    //Copies the contents of the current Deck to a new Deck
-    //This needs more thought as to how it will be used.
+    //Shuffle an Array of Cards using Fisher-Yates
+    private void shuffleArray(Card[] array) {
+        Random rnd = new Random();
+        for (int i = array.length - 1; i > 0; i--)
+        {
+            int index = rnd.nextInt(i + 1);
+
+            Card a = array[index];
+            array[index] = array[i];
+            array[i] = a;
+        }
+    }
+    
+    //Copies the contents of the current Deck to a new Deck and returns it.
     public Deck deckCopy() {
-        //Not Implemented Yet
-        return null;
+        Deck newDeck = new Deck(cards.length);
+        for(int newDeckIndex = 0; newDeckIndex < currentSize; newDeckIndex++) {
+            int nextCardIndex = topCardIndex+newDeckIndex;
+            topCardIndex = correctIndex(topCardIndex);
+            newDeck.addCardBottom(cards[nextCardIndex]);
+        }
+        return newDeck;
     }
     
     public boolean isEmpty() {
@@ -94,11 +124,12 @@ public class Deck {
         return currentSize;
     }
     
-    //Adjusts the top card index at the end and beginning of the array.
-    private void correctTopCardIndex() {
-        if(topCardIndex == cards.length)
-            topCardIndex = 0;
-        if(topCardIndex < 0)
-            topCardIndex = cards.length - 1;
+    //Adjusts the index at the end and beginning of the array.
+    private int correctIndex(int index) {
+        if(index == cards.length)
+            index = 0;
+        else if(index < 0)
+            index = cards.length - 1;
+        return index;
     }
 }
