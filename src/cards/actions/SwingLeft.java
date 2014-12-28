@@ -6,6 +6,6 @@ import cards.Action;
  *
  * @author Garrison Price
  */
-public class SwingLeft extends Action{
+public class SwingLeft extends Action {
     
 }
