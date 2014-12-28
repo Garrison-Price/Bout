@@ -9,6 +9,12 @@ public class Attribute {
     protected int currentValue;
     protected int maxValue;
     
+    public Attribute(int maxValue, int startingValue, int minValue) {
+        this.minValue = minValue;
+        this.currentValue = startingValue;
+        this.maxValue = maxValue;
+    }
+    
     public boolean decrement() {
         return decrement(1);
     }
